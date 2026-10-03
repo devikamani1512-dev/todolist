@@ -99,7 +99,7 @@ const TaskContext =
 
 // New version so the Vercel demo loads the
 // updated 7-task default data.
-const STORAGE_KEY = '@todo_tasks_v2';
+const STORAGE_KEY = '@todo_tasks_v3';
 
 // =====================================================
 // DEFAULT 7 TASKS
@@ -234,7 +234,7 @@ const defaultTasks: Task[] = [
 
     time: '11:00',
 
-    repeat: 'custom',
+  repeat: 'daily',
 
     startDate: '2026-10-01',
 
