@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   useEffect,
   useMemo,
@@ -29,7 +30,33 @@ export default function ProfileScreen() {
     changeTheme,
   } = useTheme();
 
-  const [name, setName] = useState('devika');
+const [name, setName] = useState('devika');
+
+useEffect(() => {
+  const loadName = async () => {
+    try {
+      const savedName = await AsyncStorage.getItem('@todo_user_name');
+
+      if (savedName) {
+        setName(savedName);
+      }
+    } catch (error) {
+      console.log('Failed to load user name', error);
+    }
+  };
+
+  loadName();
+}, []);
+
+const handleNameChange = async (value: string) => {
+  setName(value);
+
+  try {
+    await AsyncStorage.setItem('@todo_user_name', value);
+  } catch (error) {
+    console.log('Failed to save user name', error);
+  }
+};
   const [currentTime, setCurrentTime] =
   useState(new Date());
 
@@ -135,13 +162,12 @@ useEffect(() => {
           </Text>
 
           <TextInput
-            style={styles.nameInput}
-            value={name}
-            onChangeText={setName}
-            placeholder="Your name"
-            placeholderTextColor="#71819B"
-          />
-
+  style={styles.nameInput}
+  value={name}
+  onChangeText={handleNameChange}
+  placeholder="Your name"
+  placeholderTextColor="#71819B"
+/>
         </View>
 
 

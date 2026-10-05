@@ -1,10 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   useEffect,
   useMemo,
   useState,
 } from 'react';
 
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 
 import { useTheme } from '../context/ThemeContext';
 
@@ -182,13 +183,7 @@ export default function TasksScreen() {
     const timer = setInterval(() => {
       const now = new Date();
 
-      setCurrentTime(
-        now.toLocaleTimeString([], {
-          hour: 'numeric',
-          minute: '2-digit',
-        })
-      );
-
+     
       const newToday = getTodayDate();
       setToday((previousToday) =>
         previousToday === newToday
@@ -341,7 +336,22 @@ export default function TasksScreen() {
         'Evening'
     );
 
+const [userName, setUserName] = useState('devika');
 
+useFocusEffect(
+  React.useCallback(() => {
+    const loadUserName = async () => {
+      try {
+        const savedName = await AsyncStorage.getItem('@todo_user_name');
+        setUserName(savedName?.trim() || 'devika');
+      } catch (error) {
+        console.log('Failed to load user name', error);
+      }
+    };
+
+    loadUserName();
+  }, [])
+);
   // ===================================================
   // OPEN TASK DETAILS
   // ===================================================
@@ -359,6 +369,7 @@ export default function TasksScreen() {
       completedSubtasks: [
         ...task.completedSubtasks,
       ],
+      
     });
 
     setNewSubtask('');
@@ -823,7 +834,7 @@ export default function TasksScreen() {
         <Text
           style={styles.greeting}
         >
-          {getGreeting()}, devika
+          {getGreeting()}, {userName}
         </Text>
 
 
