@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import React, { useState } from 'react';
 
 import {
@@ -20,12 +22,26 @@ export default function OnboardingScreen() {
 
   const [name, setName] = useState('');
 
-  const handleStart = () => {
-    if (name.trim() === '') {
+  const handleStart = async () => {
+    const trimmedName = name.trim();
+
+    if (trimmedName === '') {
       return;
     }
 
-    router.replace('/tasks');
+    try {
+      await AsyncStorage.setItem(
+        '@todo_user_name',
+        trimmedName
+      );
+
+      router.replace('/tasks');
+    } catch (error) {
+      console.log(
+        'Failed to save onboarding name',
+        error
+      );
+    }
   };
 
   return (
